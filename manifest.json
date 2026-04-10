@@ -1,0 +1,10 @@
+{
+  "id": "punpun",
+  "name": "PunPun - Анализатор вакансий",
+  "version": "0.1.0",
+  "minAppVersion": "0.15.0",
+  "description": "Анализ соответствия резюме вакансиям с помощью AI",
+  "author": "PunPun Team",
+  "authorUrl": "",
+  "isDesktopOnly": false
+}

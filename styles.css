@@ -1,0 +1,57 @@
+.punpun-analysis {
+  padding: 1rem;
+}
+
+.punpun-scores {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--background-secondary);
+  border-radius: 8px;
+}
+
+.punpun-scores p {
+  margin: 0.5rem 0;
+  font-size: 1.1em;
+}
+
+.punpun-analysis h3 {
+  margin-top: 0;
+  color: var(--text-accent);
+}
+
+.punpun-analysis h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.punpun-analysis ul {
+  margin-left: 1.5rem;
+}
+
+.punpun-analysis li {
+  margin: 0.5rem 0;
+}
+
+.punpun-keyword-present {
+  color: var(--text-success);
+}
+
+.punpun-keyword-missing {
+  color: var(--text-error);
+}
+
+.punpun-cover-letter {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--background-secondary);
+  border-radius: 8px;
+  border-left: 3px solid var(--text-accent);
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.punpun-analysis button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}

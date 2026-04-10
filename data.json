@@ -1,0 +1,5 @@
+{
+  "deepseekApiKey": "sk-93e1b5c32d384c0f96db131bf71bf153",
+  "vacanciesDbPath": "vacancies.json",
+  "resumePath": "resume.md"
+}
