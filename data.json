@@ -1,5 +1,8 @@
 {
+  "aiProvider": "openrouter",
   "deepseekApiKey": "sk-93e1b5c32d384c0f96db131bf71bf153",
+  "openrouterApiKey": "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",
+  "openrouterModel": "z-ai/glm-4.5-air:free",
   "vacanciesDbPath": "vacancies.json",
   "resumePath": "resume.md"
 }

@@ -2,7 +2,7 @@ import { App, Notice, Plugin, TFile } from 'obsidian';
 import { PunPunSettings, DEFAULT_SETTINGS } from './src/settings';
 import { PunPunSettingTab } from './src/settings-tab';
 import { VacancyManager } from './src/vacancy-manager';
-import { DeepSeekAPI } from './src/deepseek-api';
+import { AIAPI } from './src/ai-api';
 import { AddVacancyModal } from './src/modals/add-vacancy-modal';
 import { AnalysisModal } from './src/modals/analysis-modal';
 import { SelectVacancyModal } from './src/modals/select-vacancy-modal';
@@ -64,8 +64,12 @@ export default class PunPunPlugin extends Plugin {
   }
 
   async analyzeResumeForVacancy(vacancy: Vacancy) {
-    if (!this.settings.deepseekApiKey) {
-      new Notice('Укажите API ключ DeepSeek в настройках');
+    const apiKey = this.settings.aiProvider === 'deepseek' 
+      ? this.settings.deepseekApiKey 
+      : this.settings.openrouterApiKey;
+
+    if (!apiKey) {
+      new Notice(`Укажите API ключ для ${this.settings.aiProvider === 'deepseek' ? 'DeepSeek' : 'OpenRouter'} в настройках`);
       return;
     }
 
@@ -78,7 +82,11 @@ export default class PunPunPlugin extends Plugin {
     const resume = await this.app.vault.read(resumeFile);
     new Notice(`Анализирую вакансию: ${vacancy.title}...`);
     
-    const api = new DeepSeekAPI(this.settings.deepseekApiKey);
+    const api = new AIAPI({
+      provider: this.settings.aiProvider,
+      apiKey: apiKey,
+      model: this.settings.openrouterModel
+    });
 
     try {
       const result = await api.analyzeResume(resume, vacancy.description, vacancy.keywords, vacancy.company, vacancy.title);
@@ -107,8 +115,12 @@ export default class PunPunPlugin extends Plugin {
   }
 
   async analyzeResume() {
-    if (!this.settings.deepseekApiKey) {
-      new Notice('Укажите API ключ DeepSeek в настройках');
+    const apiKey = this.settings.aiProvider === 'deepseek' 
+      ? this.settings.deepseekApiKey 
+      : this.settings.openrouterApiKey;
+
+    if (!apiKey) {
+      new Notice(`Укажите API ключ для ${this.settings.aiProvider === 'deepseek' ? 'DeepSeek' : 'OpenRouter'} в настройках`);
       return;
     }
 
@@ -127,7 +139,11 @@ export default class PunPunPlugin extends Plugin {
     }
 
     new Notice('Начинаю анализ всех вакансий...');
-    const api = new DeepSeekAPI(this.settings.deepseekApiKey);
+    const api = new AIAPI({
+      provider: this.settings.aiProvider,
+      apiKey: apiKey,
+      model: this.settings.openrouterModel
+    });
 
     for (const vacancy of vacancies) {
       try {

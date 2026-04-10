@@ -1,11 +1,19 @@
 import { requestUrl } from 'obsidian';
+import { AIProvider } from './settings';
 
-export class DeepSeekAPI {
-  private apiKey: string;
-  private baseUrl = 'https://api.deepseek.com/v1';
+interface AIConfig {
+  provider: AIProvider;
+  apiKey: string;
+  model?: string;
+}
 
-  constructor(apiKey: string) {
-    this.apiKey = apiKey;
+export class AIAPI {
+  private config: AIConfig;
+  private deepseekBaseUrl = 'https://api.deepseek.com/v1';
+  private openrouterBaseUrl = 'https://openrouter.ai/api/v1';
+
+  constructor(config: AIConfig) {
+    this.config = config;
   }
 
   async analyzeResume(resume: string, vacancyDescription: string, keywords: string[], companyName: string, vacancyTitle: string): Promise<string> {
@@ -55,13 +63,21 @@ ${resume}
   "coverLetter": "текст сопроводительного письма"
 }`;
 
+    if (this.config.provider === 'deepseek') {
+      return this.callDeepSeek(prompt);
+    } else {
+      return this.callOpenRouter(prompt);
+    }
+  }
+
+  private async callDeepSeek(prompt: string): Promise<string> {
     try {
       const response = await requestUrl({
-        url: `${this.baseUrl}/chat/completions`,
+        url: `${this.deepseekBaseUrl}/chat/completions`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
+          'Authorization': `Bearer ${this.config.apiKey}`
         },
         body: JSON.stringify({
           model: 'deepseek-chat',
@@ -77,6 +93,34 @@ ${resume}
     } catch (error) {
       console.error('DeepSeek API error:', error);
       throw new Error('Ошибка при обращении к DeepSeek API');
+    }
+  }
+
+  private async callOpenRouter(prompt: string): Promise<string> {
+    try {
+      const response = await requestUrl({
+        url: `${this.openrouterBaseUrl}/chat/completions`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.config.apiKey}`,
+          'HTTP-Referer': 'https://obsidian.md',
+          'X-Title': 'PunPun Obsidian Plugin'
+        },
+        body: JSON.stringify({
+          model: this.config.model || 'anthropic/claude-3.5-sonnet',
+          messages: [
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.7
+        })
+      });
+
+      const content = response.json.choices[0].message.content;
+      return content;
+    } catch (error) {
+      console.error('OpenRouter API error:', error);
+      throw new Error('Ошибка при обращении к OpenRouter API');
     }
   }
 }
